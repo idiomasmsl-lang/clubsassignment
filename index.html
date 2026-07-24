@@ -1,206 +1,642 @@
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscrição nos Clubs</title>
-    <style>
-        :root {
-            --primary-color: #2c3e50;
-            --hover-color: #34495e;
-            --bg-color: #ecf0f1;
-        }
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background: var(--bg-color); 
-            margin: 0; 
-            padding: 20px; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center;
-            min-height: 100vh;
-        }
-        .container { 
-            background: #fff; 
-            padding: 30px; 
-            border-radius: 12px; 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
-            width: 100%; 
-            max-width: 450px; 
-        }
-        h2 { 
-            text-align: center; 
-            color: #333; 
-            margin-bottom: 25px;
-        }
-        .form-group { 
-            margin-bottom: 20px; 
-        }
-        label { 
-            display: block; 
-            margin-bottom: 8px; 
-            color: #555; 
-            font-weight: 600; 
-        }
-        input[type="text"], select { 
-            width: 100%; 
-            padding: 12px; 
-            border: 1px solid #ddd; 
-            border-radius: 6px; 
-            box-sizing: border-box; 
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-        input[type="text"]:focus, select:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
-        .checkbox-group { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 10px; 
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 6px;
-            border: 1px solid #ddd;
-        }
-        .checkbox-group label { 
-            font-weight: normal; 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-            margin: 0;
-            cursor: pointer;
-        }
-        button { 
-            width: 100%; 
-            padding: 14px; 
-            background: var(--primary-color); 
-            color: white; 
-            border: none; 
-            border-radius: 6px; 
-            font-size: 16px; 
-            font-weight: bold;
-            cursor: pointer; 
-            transition: 0.3s; 
-        }
-        button:hover { 
-            background: var(--hover-color); 
-        }
-        button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-        #message { 
-            margin-top: 20px; 
-            text-align: center; 
-            font-weight: bold; 
-            padding: 10px;
-            border-radius: 6px;
-            display: none;
-        }
-        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inscrição nos Clubs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --board: #14161b;
+    --board-2: #1b1e25;
+    --panel: #1f222b;
+    --panel-line: #2c303a;
+    --cream: #f4efe4;
+    --cream-dim: #b9b4a8;
+    --stitch: rgba(244, 239, 228, 0.35);
+
+    --club1: #a4423f; --club1-ink: #ffe9e6;
+    --club2: #2f6b52; --club2-ink: #e6fff3;
+    --club3: #2c5c8a; --club3-ink: #e7f2ff;
+    --club4: #b6822a; --club4-ink: #fff6e0;
+    --club5: #6a4677; --club5-ink: #f6ecff;
+    --club6: #1c7a82; --club6-ink: #e2fbfb;
+
+    --radius-patch: 26px;
+    --shadow-soft: 0 18px 40px rgba(0,0,0,0.35);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at 15% 0%, #1e222b 0%, transparent 45%),
+      radial-gradient(circle at 85% 10%, #1a2b28 0%, transparent 40%),
+      var(--board);
+    color: var(--cream);
+    font-family: 'Work Sans', sans-serif;
+  }
+
+  h1, h2, h3, .display {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.03em;
+    font-weight: 400;
+  }
+
+  a { color: inherit; }
+
+  /* ---------- Barra fixa ---------- */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 14px clamp(16px, 4vw, 40px);
+    background: rgba(20, 22, 27, 0.88);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--panel-line);
+  }
+
+  .topbar .brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.06em;
+    color: var(--cream);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .topbar .brand .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--club6); box-shadow: 0 0 0 3px rgba(28,122,130,0.25); }
+
+  .topbar form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .field label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--cream-dim);
+  }
+  .field input, .field select {
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    color: var(--cream);
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: 'Work Sans', sans-serif;
+    min-width: 170px;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .field input::placeholder { color: #6c6f79; }
+  .field input:focus, .field select:focus {
+    outline: none;
+    border-color: var(--club6);
+    box-shadow: 0 0 0 3px rgba(28,122,130,0.25);
+  }
+  .field select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23b9b4a8'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 30px; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: clamp(50px, 9vw, 100px) clamp(16px, 4vw, 40px) clamp(30px, 6vw, 60px);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(244,239,228,0.06) 1px, transparent 1px);
+    background-size: 22px 22px;
+    mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero .eyebrow {
+    font-size: 13px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--cream-dim);
+    margin-bottom: 14px;
+  }
+  .hero h1 {
+    font-size: clamp(46px, 9vw, 104px);
+    margin: 0;
+    line-height: 0.95;
+    background: linear-gradient(180deg, var(--cream) 40%, #8f8a7d 140%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero p {
+    max-width: 560px;
+    margin: 22px auto 0;
+    color: var(--cream-dim);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* ---------- Grid de patches ---------- */
+  .grid-wrap { padding: 10px clamp(16px, 4vw, 40px) 140px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 26px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .patch {
+    --c: var(--club1);
+    --ink: var(--club1-ink);
+    position: relative;
+    background: var(--c);
+    color: var(--ink);
+    border-radius: var(--radius-patch);
+    padding: 22px;
+    cursor: pointer;
+    isolation: isolate;
+    box-shadow: var(--shadow-soft);
+    transform: translateY(0) rotate(0deg);
+    transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s;
+    opacity: 0;
+    animation: rise .6s cubic-bezier(.2,.8,.2,1) forwards;
+  }
+  .patch:nth-child(1){animation-delay:.05s}
+  .patch:nth-child(2){animation-delay:.12s}
+  .patch:nth-child(3){animation-delay:.19s}
+  .patch:nth-child(4){animation-delay:.26s}
+  .patch:nth-child(5){animation-delay:.33s}
+  .patch:nth-child(6){animation-delay:.40s}
+  @keyframes rise { from { opacity: 0; transform: translateY(18px);} to { opacity: 1; transform: translateY(0);} }
+
+  .patch::before {
+    content: "";
+    position: absolute;
+    inset: 9px;
+    border-radius: calc(var(--radius-patch) - 9px);
+    border: 2px dashed var(--stitch);
+    pointer-events: none;
+  }
+
+  .patch[data-club="CLUB 1"] { --c: var(--club1); --ink: var(--club1-ink); }
+  .patch[data-club="CLUB 2"] { --c: var(--club2); --ink: var(--club2-ink); }
+  .patch[data-club="CLUB 3"] { --c: var(--club3); --ink: var(--club3-ink); }
+  .patch[data-club="CLUB 4"] { --c: var(--club4); --ink: var(--club4-ink); }
+  .patch[data-club="CLUB 5"] { --c: var(--club5); --ink: var(--club5-ink); }
+  .patch[data-club="CLUB 6"] { --c: var(--club6); --ink: var(--club6-ink); }
+
+  .patch:hover { transform: translateY(-6px) rotate(-0.4deg); box-shadow: 0 26px 50px rgba(0,0,0,0.45); }
+
+  .patch.selected {
+    transform: translateY(-10px) rotate(0.6deg) scale(1.015);
+    box-shadow: 0 0 0 3px var(--cream), 0 26px 55px rgba(0,0,0,0.5);
+  }
+
+  .patch-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .emblem {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 2px dashed var(--stitch);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 19px;
+    flex: none;
+    background: rgba(0,0,0,0.12);
+  }
+
+  .stamp {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    padding: 6px 12px;
+    border: 2px solid var(--ink);
+    border-radius: 999px;
+    color: var(--ink);
+    opacity: 0;
+    transform: scale(1.4) rotate(-14deg);
+    transition: opacity .25s, transform .25s;
+    white-space: nowrap;
+  }
+  .patch.selected .stamp {
+    opacity: 1;
+    transform: scale(1) rotate(-8deg);
+  }
+
+  .patch h3 {
+    font-size: 34px;
+    margin: 16px 0 2px;
+    position: relative;
+    z-index: 1;
+  }
+  .patch .repr {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.85;
+    margin: 0 0 16px;
+    min-height: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .patch .toggle-btn {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding: 11px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(0,0,0,0.18);
+    color: var(--ink);
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .patch .toggle-btn:hover { background: rgba(0,0,0,0.3); }
+  .patch.selected .toggle-btn { background: rgba(0,0,0,0.35); }
+  .patch .toggle-btn:focus-visible { outline: 2px solid var(--cream); outline-offset: 2px; }
+
+  .members {
+    position: relative;
+    z-index: 1;
+    margin-top: 16px;
+    background: rgba(0,0,0,0.16);
+    border-radius: 12px;
+    padding: 12px 14px;
+  }
+  .members .members-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.9;
+    margin-bottom: 8px;
+  }
+  .members .count {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.04em;
+  }
+  .members ul {
+    list-style: none;
+    margin: 0; padding: 0;
+    max-height: 132px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .members ul::-webkit-scrollbar { width: 6px; }
+  .members ul::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.3); border-radius: 4px; }
+  .members li {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 13px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.06);
+  }
+  .members li span.t { opacity: 0.75; font-size: 11px; white-space: nowrap; }
+  .members .empty, .members .loading { font-size: 12.5px; opacity: 0.75; padding: 4px 2px; }
+
+  /* ---------- Barra flutuante de confirmação ---------- */
+  .footer-bar {
+    position: fixed;
+    left: 50%;
+    bottom: 22px;
+    transform: translate(-50%, 140%);
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    padding: 12px 14px 12px 20px;
+    border-radius: 999px;
+    box-shadow: var(--shadow-soft);
+    transition: transform .4s cubic-bezier(.2,.8,.2,1);
+    max-width: calc(100vw - 32px);
+  }
+  .footer-bar.show { transform: translate(-50%, 0); }
+  .footer-bar .count-text { font-size: 14px; color: var(--cream-dim); white-space: nowrap; }
+  .footer-bar .count-text b { color: var(--cream); }
+  .footer-bar button {
+    background: var(--club6);
+    color: #04211f;
+    border: none;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 12px 22px;
+    border-radius: 999px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: filter .2s, transform .2s;
+  }
+  .footer-bar button:hover:not(:disabled) { filter: brightness(1.1); transform: translateY(-1px); }
+  .footer-bar button:disabled { background: #4a4d55; color: #9a9da4; cursor: not-allowed; }
+
+  /* ---------- Toast ---------- */
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 96px;
+    transform: translate(-50%, 20px);
+    z-index: 70;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s, transform .3s;
+    max-width: calc(100vw - 32px);
+    text-align: center;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+  .toast.success { background: #1f4d3a; color: #d5ffe9; border: 1px solid #2f6b52; }
+  .toast.error { background: #57221f; color: #ffe0dc; border: 1px solid #a4423f; }
+
+  footer.note {
+    text-align: center;
+    color: var(--cream-dim);
+    font-size: 12.5px;
+    padding: 0 20px 40px;
+  }
+
+  @media (max-width: 640px) {
+    .topbar { flex-direction: column; align-items: stretch; }
+    .topbar form { flex-direction: column; align-items: stretch; }
+    .field input, .field select { min-width: 0; width: 100%; }
+    .footer-bar { flex-direction: column; gap: 10px; padding: 14px 18px; border-radius: 20px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <h2>Inscrição de Estudantes</h2>
-        <form id="clubForm">
-            <div class="form-group">
-                <label for="nome">Nome do Estudante</label>
-                <input type="text" id="nome" name="nome" placeholder="Introduza o seu nome" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="turma">Turma</label>
-                <select id="turma" name="turma" required>
-                    <option value="">Selecione a sua turma...</option>
-                    <option value="Turma A">Turma A</option>
-                    <option value="Turma B">Turma B</option>
-                    <option value="Turma C">Turma C</option>
-                    <option value="Turma D">Turma D</option>
-                </select>
-            </div>
 
-            <div class="form-group">
-                <label>Clubs (Selecione as suas opções)</label>
-                <div class="checkbox-group">
-                    <label><input type="checkbox" name="clubes" value="CLUB 1"> CLUB 1 (Repr. Yasmim)</label>
-                    <label><input type="checkbox" name="clubes" value="CLUB 2"> CLUB 2 (Repr. Aaron)</label>
-                    <label><input type="checkbox" name="clubes" value="CLUB 3"> CLUB 3</label>
-                    <label><input type="checkbox" name="clubes" value="CLUB 4"> CLUB 4</label>
-                    <label><input type="checkbox" name="clubes" value="CLUB 5"> CLUB 5</label>
-                    <label><input type="checkbox" name="clubes" value="CLUB 6"> CLUB 6</label>
-                </div>
-            </div>
+  <div class="topbar">
+    <div class="brand"><span class="dot"></span>INSCRIÇÃO CLUBS</div>
+    <form id="dadosForm" onsubmit="return false;">
+      <div class="field">
+        <label for="nome">Nome</label>
+        <input type="text" id="nome" name="nome" placeholder="O teu nome completo" required autocomplete="name">
+      </div>
+      <div class="field">
+        <label for="turma">Turma</label>
+        <select id="turma" name="turma" required>
+          <option value="">Selecionar…</option>
+          <option value="BAS N01">BAS N01</option>
+          <option value="BAS N02">BAS N02</option>
+          <option value="BAS N03">BAS N03</option>
+          <option value="INI N01">INI N01</option>
+          <option value="INI N02">INI N02</option>
+          <option value="INI N03">INI N03</option>
+          <option value="INI N04">INI N04</option>
+          <option value="INI N05">INI N05</option>
+          <option value="INI N06">INI N06</option>
+          <option value="INI N07">INI N07</option>
+        </select>
+      </div>
+    </form>
+  </div>
 
-            <button type="submit" id="submitBtn">Confirmar Inscrição</button>
-            <div id="message"></div>
-        </form>
-    </div>
+  <section class="hero">
+    <div class="eyebrow">Ano letivo · Atividades extracurriculares</div>
+    <h1 class="display">ESCOLHE<br>O TEU CLUB</h1>
+    <p>Preenche o teu nome e turma no topo da página, depois toca nos clubs a que te queres juntar. Podes escolher mais do que um.</p>
+  </section>
 
-    <script>
-        const form = document.getElementById('clubForm');
-        const messageDiv = document.getElementById('message');
-        const submitBtn = document.getElementById('submitBtn');
+  <div class="grid-wrap">
+    <div class="grid" id="grid"></div>
+  </div>
 
-        // IMPORTANTE: COLOQUE AQUI O URL DO WEB APP GERADO NO APPS SCRIPT
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbyK5Nl0E2p4TS-OzQyq7eblZvSvoYM8Jd4wANQ--3M0uSk0ixtz1lEeYtMy02EwxhoY/exec';
+  <div class="footer-bar" id="footerBar">
+    <span class="count-text" id="countText"><b>0</b> clubs selecionados</span>
+    <button id="confirmBtn" type="button">Confirmar Inscrição</button>
+  </div>
 
-        form.addEventListener('submit', e => {
-            e.preventDefault();
+  <div class="toast" id="toast"></div>
 
-            const checkedClubs = Array.from(document.querySelectorAll('input[name="clubes"]:checked'))
-                                      .map(cb => cb.value)
-                                      .join(',');
+  <footer class="note">Os dados ficam guardados diretamente na planilha "CLUBS ORGANIZAÇÃO".</footer>
 
-            if (checkedClubs === "") {
-                showMessage("Por favor, selecione pelo menos um club.", "error");
-                return;
-            }
+<script>
+  // IMPORTANTE: COLOQUE AQUI O URL DO WEB APP GERADO NO APPS SCRIPT
+  const scriptURL = 'SUA_URL_DO_WEB_APP_AQUI';
 
-            if (scriptURL === 'SUA_URL_DO_WEB_APP_AQUI') {
-                showMessage("Configuração incompleta: defina o scriptURL no código.", "error");
-                return;
-            }
+  const CLUBS = ['CLUB 1', 'CLUB 2', 'CLUB 3', 'CLUB 4', 'CLUB 5', 'CLUB 6'];
+  const selected = new Set();
 
-            submitBtn.disabled = true;
-            submitBtn.innerText = "A enviar dados...";
-            messageDiv.style.display = "none";
+  const grid = document.getElementById('grid');
+  const footerBar = document.getElementById('footerBar');
+  const countText = document.getElementById('countText');
+  const confirmBtn = document.getElementById('confirmBtn');
+  const toast = document.getElementById('toast');
 
-            const formData = new FormData();
-            formData.append('nome', document.getElementById('nome').value);
-            formData.append('turma', document.getElementById('turma').value);
-            formData.append('clubes', checkedClubs);
+  // ---------- Construir os patches ----------
+  CLUBS.forEach((club, i) => {
+    const num = String(i + 1).padStart(2, '0');
+    const el = document.createElement('article');
+    el.className = 'patch';
+    el.dataset.club = club;
+    el.setAttribute('role', 'button');
+    el.setAttribute('tabindex', '0');
+    el.setAttribute('aria-pressed', 'false');
+    el.innerHTML = `
+      <div class="patch-head">
+        <div class="emblem">${num}</div>
+        <div class="stamp">Participo</div>
+      </div>
+      <h3>${club}</h3>
+      <p class="repr" data-role="repr">A carregar representante…</p>
+      <button type="button" class="toggle-btn" data-role="toggle">Participar</button>
+      <div class="members">
+        <div class="members-head">
+          <span>Inscritos</span>
+          <span class="count" data-role="count">–</span>
+        </div>
+        <ul data-role="list"><li class="loading">A carregar…</li></ul>
+      </div>
+    `;
 
-            fetch(scriptURL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: formData
-            })
-            .then(response => {
-                showMessage("Inscrição efetuada com sucesso!", "success");
-                form.reset();
-                resetButton();
-            })
-            .catch(error => {
-                console.error('Erro!', error.message);
-                showMessage("Ocorreu um erro ao enviar. Tente novamente.", "error");
-                resetButton();
-            });
+    const toggle = () => toggleClub(club, el);
+    el.addEventListener('click', (e) => { if (e.target.closest('[data-role="toggle"]') || e.target === el || e.target.closest('h3, .repr, .emblem')) toggle(); });
+    el.querySelector('[data-role="toggle"]').addEventListener('click', (e) => { e.stopPropagation(); toggle(); });
+    el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+
+    grid.appendChild(el);
+  });
+
+  function toggleClub(club, el) {
+    if (selected.has(club)) {
+      selected.delete(club);
+      el.classList.remove('selected');
+      el.setAttribute('aria-pressed', 'false');
+      el.querySelector('[data-role="toggle"]').textContent = 'Participar';
+    } else {
+      selected.add(club);
+      el.classList.add('selected');
+      el.setAttribute('aria-pressed', 'true');
+      el.querySelector('[data-role="toggle"]').textContent = 'Selecionado ✓';
+    }
+    updateFooter();
+  }
+
+  function updateFooter() {
+    const n = selected.size;
+    countText.innerHTML = `<b>${n}</b> club${n === 1 ? '' : 's'} selecionado${n === 1 ? '' : 's'}`;
+    footerBar.classList.toggle('show', n > 0);
+    confirmBtn.disabled = n === 0;
+  }
+
+  // ---------- Carregar representantes + inscritos (JSONP, evita CORS) ----------
+  function loadClubData() {
+    if (scriptURL === 'SUA_URL_DO_WEB_APP_AQUI') {
+      document.querySelectorAll('[data-role="repr"]').forEach(elm => elm.textContent = 'Configura o scriptURL no código');
+      document.querySelectorAll('[data-role="list"]').forEach(elm => elm.innerHTML = '<li class="empty">—</li>');
+      return;
+    }
+    const callbackName = 'clubDataCallback_' + Date.now();
+    window[callbackName] = function (data) {
+      renderClubData(data);
+      delete window[callbackName];
+      script.remove();
+    };
+    const script = document.createElement('script');
+    script.src = scriptURL + (scriptURL.includes('?') ? '&' : '?') + 'callback=' + callbackName;
+    script.onerror = () => {
+      document.querySelectorAll('[data-role="list"]').forEach(elm => elm.innerHTML = '<li class="empty">Não foi possível carregar</li>');
+    };
+    document.body.appendChild(script);
+  }
+
+  function renderClubData(data) {
+    CLUBS.forEach(club => {
+      const info = data[club];
+      const el = grid.querySelector(`.patch[data-club="${club}"]`);
+      if (!el || !info) return;
+
+      const reprEl = el.querySelector('[data-role="repr"]');
+      reprEl.textContent = info.representante ? 'Repr. ' + info.representante.replace(/^REPR\.?\s*/i, '') : 'Representante a anunciar';
+
+      const listEl = el.querySelector('[data-role="list"]');
+      const countEl = el.querySelector('[data-role="count"]');
+      countEl.textContent = info.membros.length;
+
+      if (info.membros.length === 0) {
+        listEl.innerHTML = '<li class="empty">Ainda sem inscritos</li>';
+      } else {
+        listEl.innerHTML = info.membros.map(m =>
+          `<li><span>${escapeHtml(m.nome)}</span><span class="t">${escapeHtml(m.turma)}</span></li>`
+        ).join('');
+      }
+    });
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+  }
+
+  // ---------- Confirmar inscrição ----------
+  confirmBtn.addEventListener('click', () => {
+    const nome = document.getElementById('nome').value.trim();
+    const turma = document.getElementById('turma').value;
+
+    if (!nome || !turma) {
+      showToast('Preenche o teu nome e turma no topo da página.', 'error');
+      document.getElementById('nome').focus();
+      return;
+    }
+    if (selected.size === 0) {
+      showToast('Seleciona pelo menos um club.', 'error');
+      return;
+    }
+    if (scriptURL === 'SUA_URL_DO_WEB_APP_AQUI') {
+      showToast('Configuração incompleta: define o scriptURL no código.', 'error');
+      return;
+    }
+
+    confirmBtn.disabled = true;
+    const originalText = confirmBtn.textContent;
+    confirmBtn.textContent = 'A enviar…';
+
+    const formData = new FormData();
+    formData.append('nome', nome);
+    formData.append('turma', turma);
+    formData.append('clubes', Array.from(selected).join(','));
+
+    fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: formData })
+      .then(() => {
+        showToast('Inscrição efetuada com sucesso!', 'success');
+        selected.forEach(club => {
+          const el = grid.querySelector(`.patch[data-club="${club}"]`);
+          if (el) {
+            el.classList.remove('selected');
+            el.setAttribute('aria-pressed', 'false');
+            el.querySelector('[data-role="toggle"]').textContent = 'Participar';
+          }
         });
+        selected.clear();
+        updateFooter();
+        document.getElementById('dadosForm').reset();
+        setTimeout(loadClubData, 800);
+      })
+      .catch(err => {
+        console.error(err);
+        showToast('Ocorreu um erro ao enviar. Tenta novamente.', 'error');
+      })
+      .finally(() => {
+        confirmBtn.disabled = selected.size === 0;
+        confirmBtn.textContent = originalText;
+      });
+  });
 
-        function showMessage(text, type) {
-            messageDiv.textContent = text;
-            messageDiv.className = type;
-            messageDiv.style.display = "block";
-        }
+  let toastTimer;
+  function showToast(text, type) {
+    clearTimeout(toastTimer);
+    toast.textContent = text;
+    toast.className = 'toast show ' + type;
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 3600);
+  }
 
-        function resetButton() {
-            submitBtn.disabled = false;
-            submitBtn.innerText = "Confirmar Inscrição";
-        }
-    </script>
+  loadClubData();
+</script>
 </body>
 </html>
