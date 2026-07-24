@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscrição nos Clubs</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --hover-color: #34495e;
+            --bg-color: #ecf0f1;
+        }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: var(--bg-color); 
+            margin: 0; 
+            padding: 20px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container { 
+            background: #fff; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
+            width: 100%; 
+            max-width: 450px; 
+        }
+        h2 { 
+            text-align: center; 
+            color: #333; 
+            margin-bottom: 25px;
+        }
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            color: #555; 
+            font-weight: 600; 
+        }
+        input[type="text"], select { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #ddd; 
+            border-radius: 6px; 
+            box-sizing: border-box; 
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        .checkbox-group { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        .checkbox-group label { 
+            font-weight: normal; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            margin: 0;
+            cursor: pointer;
+        }
+        button { 
+            width: 100%; 
+            padding: 14px; 
+            background: var(--primary-color); 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            font-size: 16px; 
+            font-weight: bold;
+            cursor: pointer; 
+            transition: 0.3s; 
+        }
+        button:hover { 
+            background: var(--hover-color); 
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        #message { 
+            margin-top: 20px; 
+            text-align: center; 
+            font-weight: bold; 
+            padding: 10px;
+            border-radius: 6px;
+            display: none;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Inscrição de Estudantes</h2>
+        <form id="clubForm">
+            <div class="form-group">
+                <label for="nome">Nome do Estudante</label>
+                <input type="text" id="nome" name="nome" placeholder="Introduza o seu nome" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="turma">Turma</label>
+                <select id="turma" name="turma" required>
+                    <option value="">Selecione a sua turma...</option>
+                    <option value="Turma A">Turma A</option>
+                    <option value="Turma B">Turma B</option>
+                    <option value="Turma C">Turma C</option>
+                    <option value="Turma D">Turma D</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Clubs (Selecione as suas opções)</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="clubes" value="CLUB 1"> CLUB 1 (Repr. Yasmim)</label>
+                    <label><input type="checkbox" name="clubes" value="CLUB 2"> CLUB 2 (Repr. Aaron)</label>
+                    <label><input type="checkbox" name="clubes" value="CLUB 3"> CLUB 3</label>
+                    <label><input type="checkbox" name="clubes" value="CLUB 4"> CLUB 4</label>
+                    <label><input type="checkbox" name="clubes" value="CLUB 5"> CLUB 5</label>
+                    <label><input type="checkbox" name="clubes" value="CLUB 6"> CLUB 6</label>
+                </div>
+            </div>
+
+            <button type="submit" id="submitBtn">Confirmar Inscrição</button>
+            <div id="message"></div>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('clubForm');
+        const messageDiv = document.getElementById('message');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // IMPORTANTE: COLOQUE AQUI O URL DO WEB APP GERADO NO APPS SCRIPT
+        const scriptURL = 'SUA_URL_DO_WEB_APP_AQUI';
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+
+            const checkedClubs = Array.from(document.querySelectorAll('input[name="clubes"]:checked'))
+                                      .map(cb => cb.value)
+                                      .join(',');
+
+            if (checkedClubs === "") {
+                showMessage("Por favor, selecione pelo menos um club.", "error");
+                return;
+            }
+
+            if (scriptURL === 'SUA_URL_DO_WEB_APP_AQUI') {
+                showMessage("Configuração incompleta: defina o scriptURL no código.", "error");
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = "A enviar dados...";
+            messageDiv.style.display = "none";
+
+            const formData = new FormData();
+            formData.append('nome', document.getElementById('nome').value);
+            formData.append('turma', document.getElementById('turma').value);
+            formData.append('clubes', checkedClubs);
+
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: formData
+            })
+            .then(response => {
+                showMessage("Inscrição efetuada com sucesso!", "success");
+                form.reset();
+                resetButton();
+            })
+            .catch(error => {
+                console.error('Erro!', error.message);
+                showMessage("Ocorreu um erro ao enviar. Tente novamente.", "error");
+                resetButton();
+            });
+        });
+
+        function showMessage(text, type) {
+            messageDiv.textContent = text;
+            messageDiv.className = type;
+            messageDiv.style.display = "block";
+        }
+
+        function resetButton() {
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Confirmar Inscrição";
+        }
+    </script>
+</body>
+</html>
