@@ -565,7 +565,7 @@
     const script = document.createElement('script');
     script.src = scriptURL + (scriptURL.includes('?') ? '&' : '?') + 'callback=' + callbackName;
     script.onerror = () => {
-      document.querySelectorAll('[data-role="list"]').forEach(elm => elm.innerHTML = '<li class="empty">Couldn\\'t load</li>');
+      document.querySelectorAll('[data-role="list"]').forEach(elm => elm.innerHTML = '<li class="empty">Could not load</li>');
     };
     document.body.appendChild(script);
   }
@@ -577,7 +577,7 @@
       if (!el || !info) return;
 
       const repClean = info.representante
-        ? info.representante.replace(/^REPR\\.?\\s*/i, '').trim()
+        ? info.representante.replace(/^REPR\.?\s*/i, '').trim()
         : '';
       const nameEl = el.querySelector('[data-role="repr-name"]');
       const avatarEl = el.querySelector('.avatar');
