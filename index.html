@@ -292,6 +292,20 @@
   }
   .patch .repr .repr-label { text-transform: uppercase; font-size: 10px; letter-spacing: 0.08em; opacity: 0.8; margin-right: 2px; }
 
+  .patch .schedule {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    letter-spacing: 0.02em;
+    opacity: 0.9;
+    margin: -8px 0 16px;
+  }
+  .patch .schedule:empty { display: none; }
+  .patch .schedule::before { content: "🕒"; font-size: 12px; }
+
   .patch .toggle-btn {
     position: relative;
     z-index: 1;
@@ -479,7 +493,7 @@
 
 <script>
   // IMPORTANT: PUT THE WEB APP URL HERE
-  const scriptURL = 'https://script.google.com/macros/s/AKfycbyK5Nl0E2p4TS-OzQyq7eblZvSvoYM8Jd4wANQ--3M0uSk0ixtz1lEeYtMy02EwxhoY/exec';
+  const scriptURL = 'SUA_URL_DO_WEB_APP_AQUI';
 
   // Club names as they appear in the spreadsheet (row 1 of "Tab")
   const CLUBS = ['CLUB 1', 'CLUB 2', 'CLUB 3', 'CLUB 4', 'CLUB 5', 'CLUB 6'];
@@ -506,8 +520,9 @@
         <div class="emblem">${num}</div>
         <div class="stamp">Joined</div>
       </div>
-      <h3>${club}</h3>
+      <h3 data-role="clubname">${club}</h3>
       <p class="repr" data-role="repr"><span class="avatar">?</span><span class="repr-label">Rep</span><span data-role="repr-name">Loading…</span></p>
+      <p class="schedule" data-role="schedule"></p>
       <button type="button" class="toggle-btn" data-role="toggle">Join</button>
       <div class="members">
         <div class="members-head">
@@ -576,6 +591,9 @@
       const el = grid.querySelector(`.patch[data-club="${club}"]`);
       if (!el || !info) return;
 
+      const nameHeadEl = el.querySelector('[data-role="clubname"]');
+      if (nameHeadEl && info.nome) nameHeadEl.textContent = info.nome;
+
       const repClean = info.representante
         ? info.representante.replace(/^REPR\.?\s*/i, '').trim()
         : '';
@@ -588,6 +606,9 @@
         nameEl.textContent = 'To be announced';
         avatarEl.textContent = '?';
       }
+
+      const scheduleEl = el.querySelector('[data-role="schedule"]');
+      if (scheduleEl) scheduleEl.textContent = info.horario || '';
 
       const listEl = el.querySelector('[data-role="list"]');
       const countEl = el.querySelector('[data-role="count"]');
@@ -621,7 +642,7 @@
       showToast('Select at least one club.', 'error');
       return;
     }
-    if (scriptURL === 'SUA_URL_DO_WEB_APP_AQUI') {
+    if (scriptURL === 'https://script.google.com/macros/s/AKfycbyK5Nl0E2p4TS-OzQyq7eblZvSvoYM8Jd4wANQ--3M0uSk0ixtz1lEeYtMy02EwxhoY/exec') {
       showToast('Incomplete setup: set the scriptURL in the code.', 'error');
       return;
     }
